@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broker Login Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .input-fields {
+            display: block;
+        }
+        .input-fields.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Broker Login</h1>
+        <form action="/upstox" method="POST">
+            <div class="form-group">
+                <label for="broker">Select Broker:</label>
+                <select id="broker" name="broker" onchange="toggleFields()">
+                    <option value="upstox" selected>Upstox</option>
+                </select>
+            </div>
+            <div id="inputFields" class="input-fields">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="otpSecret">OTP Secret:</label>
+                    <input type="text" id="otpSecret" name="otpSecret" required>
+                </div>
+                <div class="form-group">
+                    <label for="client_id">Client ID:</label>
+                    <input type="text" id="client_id" name="client_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="client_secret">Client Secret:</label>
+                    <input type="text" id="client_secret" name="client_secret" required>
+                </div>
+                <div class="form-group">
+                    <label for="redirect_uri">Redirect URI:</label>
+                    <input type="text" id="redirect_uri" name="redirect_uri" required>
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        function toggleFields() {
+            const broker = document.getElementById('broker').value;
+            const inputFields = document.getElementById('inputFields');
+            
+            if (broker === 'upstox') {
+                inputFields.classList.remove('hidden');
+            } else {
+                inputFields.classList.add('hidden');
+            }
+        }
+        
+        // Initialize on page load
+        toggleFields();
+    </script>
+</body>
+</html>
+

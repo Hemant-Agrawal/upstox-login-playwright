@@ -1,6 +1,6 @@
 # Upstox Login Automation
 
-A Node.js API server that automates the Upstox login process using Playwright browser automation. This project provides an Express.js endpoint that handles authentication to the Upstox trading platform, including OTP generation and PIN entry.
+A Node.js API server that automates the Upstox login process using Playwright browser automation. This project provides a web interface and RESTful API endpoint that handles authentication to the Upstox trading platform, including OTP generation, PIN entry, and token exchange.
 
 Repository: [https://github.com/Hemant-Agrawal/upstox-login-playwright](https://github.com/Hemant-Agrawal/upstox-login-playwright)
 
@@ -11,6 +11,8 @@ Repository: [https://github.com/Hemant-Agrawal/upstox-login-playwright](https://
 - 🔑 OTP generation using time-based one-time passwords (TOTP)
 - 🎭 Headless browser automation with Playwright
 - 🚀 RESTful API endpoint
+- 🖥️ User-friendly web form interface
+- 🔄 Automatic token exchange after authorization
 
 ## Prerequisites
 
@@ -45,33 +47,72 @@ node server.js
 
 2. The API will be running on `http://localhost:3000`
 
-3. Make a GET request to the root endpoint with the following query parameters:
-   - `username`: Upstox mobile number
-   - `password`: 6-digit PIN
-   - `otpSecret`: Secret key for OTP generation
-   - `client_id`: Upstox OAuth client ID
-   - `redirect_uri`: OAuth redirect URI
+3. **Using the Web Form (Recommended):**
+   - Open your browser and navigate to `http://localhost:3000`
+   - Fill in the form with your credentials:
+     - **Username**: Your Upstox mobile number
+     - **Password**: Your 6-digit PIN
+     - **OTP Secret**: Secret key for TOTP generation
+     - **Client ID**: Upstox OAuth client ID
+     - **Client Secret**: Upstox OAuth client secret
+     - **Redirect URI**: OAuth redirect URI
+   - Click Submit
 
-Example:
-```
-http://localhost:3000/?username=YOUR_MOBILE&password=YOUR_PIN&otpSecret=YOUR_SECRET&client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI
-```
+4. **Using the API directly:**
+   - Make a POST request to `http://localhost:3000/upstox` with the following JSON body:
+   ```json
+   {
+     "username": "YOUR_MOBILE",
+     "password": "YOUR_PIN",
+     "otpSecret": "YOUR_SECRET",
+     "client_id": "YOUR_CLIENT_ID",
+     "client_secret": "YOUR_CLIENT_SECRET",
+     "redirect_uri": "YOUR_REDIRECT_URI"
+   }
+   ```
 
 ## API Endpoints
 
 ### GET /
+Returns an HTML form for easy credential input.
+
+**Response:**
+- HTML form with input fields for all required parameters
+
+### POST /upstox
 Initiates the automated login process for Upstox.
 
-**Query Parameters:**
+**Request Body (JSON):**
 - `username` (required): Mobile number for login
 - `password` (required): 6-digit PIN
 - `otpSecret` (required): Secret key for TOTP generation
 - `client_id` (required): Upstox OAuth client ID
+- `client_secret` (required): Upstox OAuth client secret
 - `redirect_uri` (required): OAuth redirect URI
 
 **Response:**
-- Success: Returns "success" message
-- Error: Returns JSON error object with status 400 if required parameters are missing
+```json
+{
+  "success": true,
+  "url": "https://redirect-uri.com?code=AUTHORIZATION_CODE",
+  "data": {
+    "access_token": "...",
+    "token_type": "Bearer",
+    ...
+  },
+  "error": null
+}
+```
+
+**Error Response:**
+```json
+{
+  "success": false,
+  "url": null,
+  "error": "Error message",
+  "missing": ["field1", "field2"]  // if validation fails
+}
+```
 
 ## Technology Stack
 
@@ -83,9 +124,12 @@ Initiates the automated login process for Upstox.
 
 ```
 ├── server.js          # Main Express server and automation logic
+├── upstox.js          # Upstox token exchange logic
+├── views/
+│   └── form.html      # Web form interface
 ├── package.json       # Project dependencies
-├── Dockerfile        # Docker configuration (if applicable)
-└── README.md         # Project documentation
+├── Dockerfile         # Docker configuration (if applicable)
+└── README.md          # Project documentation
 ```
 
 ## Security Notes
@@ -95,6 +139,7 @@ Initiates the automated login process for Upstox.
 - Credentials are never committed to version control
 - Use environment variables or secure secret management in production
 - Implement proper authentication and authorization for the API endpoint
+- Consider using HTTPS in production environments
 
 ## License
 
